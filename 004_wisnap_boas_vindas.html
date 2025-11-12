@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisnap - Bem-vindo!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2B59FF;
+            --secondary-blue: #7398FF;
+            --accent-yellow: #FFD23F;
+            --light-gray: #E2E2E2;
+            --background: #F8F9FA;
+            --dark-text: #0A0E27;
+            --success-green: #10B981;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .loading-screen.hide {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        .loading-logo {
+            width: 140px;
+            height: 140px;
+            background: var(--primary-blue);
+            border-radius: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: logoColorChange 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoColorChange {
+            0% {
+                background: var(--primary-blue);
+                box-shadow: 0 20px 60px rgba(43, 89, 255, 0.4);
+            }
+            100% {
+                background: var(--accent-yellow);
+                box-shadow: 0 20px 60px rgba(255, 210, 63, 0.4);
+            }
+        }
+
+        .loading-logo-w {
+            font-size: 72px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+        }
+
+        .loading-logo-dot {
+            position: absolute;
+            top: -12px;
+            right: -16px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            animation: dotColorChange 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes dotColorChange {
+            0% {
+                background: var(--accent-yellow);
+            }
+            100% {
+                background: var(--primary-blue);
+            }
+        }
+
+        .loading-text {
+            margin-top: 32px;
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Main Content */
+        .main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+
+        .main-content.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 48px 32px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Celebration Header */
+        .celebration-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .celebration-emoji {
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .celebration-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .celebration-subtitle {
+            font-size: 20px;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+
+        .username-highlight {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        /* Profile Summary Card */
+        .profile-summary {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            border: 2px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .profile-summary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12);
+            border-color: var(--secondary-blue);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .profile-avatar::after {
+            content: '✓';
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 32px;
+            height: 32px;
+            background: var(--success-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 6px;
+        }
+
+        .profile-username {
+            font-size: 18px;
+            color: #6B7280;
+            margin-bottom: 12px;
+        }
+
+        .profile-bio {
+            font-size: 15px;
+            color: #6B7280;
+            line-height: 1.6;
+        }
+
+        /* Profile Stats */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: var(--background);
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(43, 89, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Features List */
+        .features-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--background);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(43, 89, 255, 0.05);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .cta-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 12px;
+        }
+
+        .cta-subtitle {
+            font-size: 16px;
+            color: #6B7280;
+            margin-bottom: 32px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            padding: 18px 48px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #1E3FCC;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(43, 89, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            padding: 18px 32px;
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(43, 89, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Tips Section */
+        .tips-section {
+            background: linear-gradient(135deg, rgba(43, 89, 255, 0.05), rgba(115, 152, 255, 0.05));
+            border-radius: 20px;
+            padding: 32px;
+            border: 2px solid rgba(43, 89, 255, 0.1);
+        }
+
+        .tips-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .tip-number {
+            width: 28px;
+            height: 28px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-yellow);
+            position: fixed;
+            top: -10px;
+            animation: fall 3s linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 20px;
+            }
+
+            .celebration-emoji {
+                font-size: 60px;
+            }
+
+            .celebration-title {
+                font-size: 36px;
+            }
+
+            .celebration-subtitle {
+                font-size: 18px;
+            }
+
+            .profile-summary {
+                padding: 32px 24px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 40px;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .features-list {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-in {
+            animation: slideInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <div class="loading-logo-w">
+                W
+                <div class="loading-logo-dot"></div>
+            </div>
+        </div>
+        <div class="loading-text">Preparando tudo para você...</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <!-- Celebration Header -->
+            <div class="celebration-header animate-slide-in">
+                <div class="celebration-emoji">🎉</div>
+                <h1 class="celebration-title">
+                    Bem-vindo ao Wisnap,<br>
+                    <span class="username-highlight">@joaosilva</span>!
+                </h1>
+                <p class="celebration-subtitle">
+                    Sua conta foi criada com sucesso! Agora você faz parte da maior comunidade de humor da internet.
+                </p>
+            </div>
+
+            <!-- Profile Summary -->
+            <div class="profile-summary animate-slide-in delay-1">
+                <div class="profile-header">
+                    <div class="profile-avatar">J</div>
+                    <div class="profile-info">
+                        <div class="profile-name">João da Silva</div>
+                        <div class="profile-username">@joaosilva</div>
+                        <div class="profile-bio">
+                            Profissional de marketing que ama memes e procrastinação. Se você não me encontrar aqui, estou fugindo das responsabilidades 😅
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">💼</div>
+                        <span class="stat-value">Profissional Liberal</span>
+                        <span class="stat-label">Tipo de Usuário</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❤️</div>
+                        <span class="stat-value">5</span>
+                        <span class="stat-label">Interesses</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <span class="stat-value">12</span>
+                        <span class="stat-label">Seguindo</span>
+                    </div>
+                </div>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <div class="feature-text">Perfil verificado e ativo</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎨</div>
+                        <div class="feature-text">Feed personalizado pronto</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔔</div>
+                        <div class="feature-icon">Notificações configuradas</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🚀</div>
+                        <div class="feature-text">Pronto para viralizar</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section animate-slide-in delay-2">
+                <h2 class="cta-title">Hora de criar seu primeiro Wisnap! 🎬</h2>
+                <p class="cta-subtitle">
+                    Transforme uma foto em um meme hilário e compartilhe com a comunidade
+                </p>
+                <div class="cta-buttons">
+                    <button class="btn-primary" onclick="startTutorial()">
+                        <span>Criar Meu Primeiro Wisnap</span>
+                        <span>→</span>
+                    </button>
+                    <button class="btn-secondary" onclick="exploreFeed()">
+                        Explorar Feed Primeiro
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="tips-section animate-slide-in delay-3">
+                <h3 class="tips-title">
+                    <span>💡</span>
+                    <span>Dicas para começar bem:</span>
+                </h3>
+                <div class="tips-list">
+                    <div class="tip-item">
+                        <div class="tip-number">1</div>
+                        <div class="tip-text">
+                            <strong>Seja autêntico:</strong> Os melhores Wisnaps são aqueles que refletem situações reais do seu dia a dia
+                        </div>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-number">2</div>
+                        <div class="tip-text">
+                            <strong>Use a IA a seu favor:</strong> Descreva exatamente o que você imagina e deixe a mágica acontecer
+                        </div>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-number">3</div>
+                        <div class="tip-text">
+                            <strong>Interaja com a comunidade:</strong> Comente, curta e compartilhe Wisnaps de outros criadores
+                        </div>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-number">4</div>
+                        <div class="tip-text">
+                            <strong>Poste regularmente:</strong> Quanto mais você criar, mais seu feed será personalizado para você
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            // Hide loading screen after 3 seconds
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                const mainContent = document.getElementById('mainContent');
+                
+                loadingScreen.classList.add('hide');
+                
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    mainContent.classList.add('show');
+                    
+                    // Launch confetti
+                    createConfetti();
+                }, 500);
+            }, 3000);
+        });
+
+        // Confetti Effect
+        function createConfetti() {
+            const colors = ['#2B59FF', '#7398FF', '#FFD23F', '#10B981'];
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 4000);
+                }, i * 50);
+            }
+        }
+
+        // Start Tutorial
+        function startTutorial() {
+            // Show loading
+            const mainContent = document.getElementById('mainContent');
+            mainContent.style.opacity = '0';
+            mainContent.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                alert('🎬 Iniciando tutorial interativo...\n\nVocê será guiado passo a passo para criar seu primeiro Wisnap incrível!\n\n📸 Upload → 💭 Descrição → ✨ IA cria magia → 🚀 Publicar');
+                // Redirect to tutorial
+                // window.location.href = '/tutorial';
+            }, 500);
+        }
+
+        // Explore Feed
+        function exploreFeed() {
+            const mainContent = document.getElementById('mainContent');
+            mainContent.style.opacity = '0';
+            mainContent.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                alert('🎉 Redirecionando para seu feed personalizado...\n\nVocê verá conteúdo dos 12 criadores que você seguiu!');
+                // Redirect to feed
+                // window.location.href = '/feed';
+            }, 500);
+        }
+
+        // Prevent form resubmission on refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+</html>
