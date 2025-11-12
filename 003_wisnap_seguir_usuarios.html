@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisnap - Seguir Usuários</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2B59FF;
+            --secondary-blue: #7398FF;
+            --accent-yellow: #FFD23F;
+            --light-gray: #E2E2E2;
+            --background: #F8F9FA;
+            --dark-text: #0A0E27;
+            --success-green: #10B981;
+            --error-red: #EF4444;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            padding: 24px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-mini {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-blue);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-mini-w {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo-mini-dot {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .progress-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--primary-blue);
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: var(--success-green);
+        }
+
+        .progress-label {
+            font-size: 13px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 32px;
+        }
+
+        /* Intro Section */
+        .intro-section {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .intro-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 24px;
+            box-shadow: 0 10px 30px rgba(43, 89, 255, 0.2);
+        }
+
+        .intro-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 12px;
+        }
+
+        .intro-subtitle {
+            font-size: 18px;
+            color: #6B7280;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .follow-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(43, 89, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .follow-counter-number {
+            font-size: 20px;
+        }
+
+        /* Users Grid */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        /* User Card */
+        .user-card {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary-blue);
+        }
+
+        .user-card.following {
+            border-color: var(--success-green);
+            background: rgba(16, 185, 129, 0.03);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+        }
+
+        .user-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 24px;
+            height: 24px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+        }
+
+        .user-username {
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 12px;
+        }
+
+        .user-bio {
+            font-size: 13px;
+            color: #6B7280;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 40px;
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 16px;
+            padding: 12px 0;
+            border-top: 1px solid var(--light-gray);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .user-stat {
+            text-align: center;
+        }
+
+        .user-stat-number {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark-text);
+            display: block;
+        }
+
+        .user-stat-label {
+            font-size: 11px;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Follow Button */
+        .btn-follow {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-follow.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-follow.primary:hover {
+            background: #1E3FCC;
+            transform: scale(1.02);
+        }
+
+        .btn-follow.following {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-follow.following:hover {
+            background: #059669;
+        }
+
+        /* Action Footer */
+        .action-footer {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 2px solid var(--light-gray);
+            padding: 24px 32px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .action-info {
+            flex: 1;
+        }
+
+        .action-info-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+        }
+
+        .action-info-subtitle {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn-action.skip {
+            background: transparent;
+            color: #6B7280;
+            border: 2px solid var(--light-gray);
+        }
+
+        .btn-action.skip:hover {
+            background: var(--light-gray);
+            color: var(--dark-text);
+        }
+
+        .btn-action.follow-all {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-action.follow-all:hover {
+            background: #1E3FCC;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43, 89, 255, 0.3);
+        }
+
+        .btn-action.follow-all:disabled {
+            background: var(--light-gray);
+            color: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-action.continue {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-action.continue:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-action.continue:disabled {
+            background: var(--light-gray);
+            color: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--light-gray);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            display: none;
+        }
+
+        .empty-state.show {
+            display: block;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 12px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            color: #6B7280;
+            margin-bottom: 32px;
+        }
+
+        /* Success Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success-green);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .users-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .progress-mini {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .container {
+                padding: 32px 20px;
+            }
+
+            .intro-title {
+                font-size: 28px;
+            }
+
+            .intro-subtitle {
+                font-size: 16px;
+            }
+
+            .users-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .action-footer {
+                padding: 20px;
+            }
+
+            .action-footer-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-card {
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .user-card:nth-child(1) { animation-delay: 0.05s; }
+        .user-card:nth-child(2) { animation-delay: 0.10s; }
+        .user-card:nth-child(3) { animation-delay: 0.15s; }
+        .user-card:nth-child(4) { animation-delay: 0.20s; }
+        .user-card:nth-child(5) { animation-delay: 0.25s; }
+        .user-card:nth-child(6) { animation-delay: 0.30s; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .user-card.following {
+            animation: pulse 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-header">
+                <div class="logo-mini">
+                    <div class="logo-mini-w">
+                        W
+                        <div class="logo-mini-dot"></div>
+                    </div>
+                </div>
+                <div class="header-text">
+                    <h1>Quase lá! 🎉</h1>
+                    <p>Última etapa do seu cadastro</p>
+                </div>
+            </div>
+            <div class="progress-mini">
+                <div class="progress-dots">
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot active"></div>
+                </div>
+                <span class="progress-label">Etapa 6 de 6</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Intro Section -->
+        <div class="intro-section">
+            <div class="intro-icon">👥</div>
+            <h2 class="intro-title">Siga criadores incríveis</h2>
+            <p class="intro-subtitle">
+                Popule seu feed com os melhores memes e conteúdo humorístico. 
+                Você pode seguir todos, alguns ou pular esta etapa.
+            </p>
+            <div class="follow-counter">
+                <span class="follow-counter-number" id="followCount">0</span>
+                <span>criadores seguidos</span>
+            </div>
+        </div>
+
+        <!-- Users Grid -->
+        <div class="users-grid" id="usersGrid">
+            <!-- User Card 1 -->
+            <div class="user-card" data-user-id="1">
+                <div class="user-badge">⭐</div>
+                <img src="https://i.pravatar.cc/150?img=12" alt="Avatar" class="user-avatar">
+                <div class="user-name">Maria Santos</div>
+                <div class="user-username">@mariamemes</div>
+                <div class="user-bio">
+                    Especialista em memes corporativos e situações de escritório que todo mundo passa 💼😅
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">127K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">2.5M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 1)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 2 -->
+            <div class="user-card" data-user-id="2">
+                <div class="user-badge">🔥</div>
+                <img src="https://i.pravatar.cc/150?img=33" alt="Avatar" class="user-avatar">
+                <div class="user-name">João Silva</div>
+                <div class="user-username">@joaozueiro</div>
+                <div class="user-bio">
+                    Pai de família que transforma o caos doméstico em humor de qualidade 👨‍👩‍👧‍👦
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">89K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">1.8M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 2)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 3 -->
+            <div class="user-card" data-user-id="3">
+                <div class="user-badge">✨</div>
+                <img src="https://i.pravatar.cc/150?img=47" alt="Avatar" class="user-avatar">
+                <div class="user-name">Ana Costa</div>
+                <div class="user-username">@anacriativa</div>
+                <div class="user-bio">
+                    Estudante universitária relatando as aventuras e desventuras da vida acadêmica 📚
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">156K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">3.2M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 3)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 4 -->
+            <div class="user-card" data-user-id="4">
+                <div class="user-badge">💡</div>
+                <img src="https://i.pravatar.cc/150?img=68" alt="Avatar" class="user-avatar">
+                <div class="user-name">Carlos Tech</div>
+                <div class="user-username">@carlosdev</div>
+                <div class="user-bio">
+                    Desenvolvedor que transforma bugs em memes e café em código 💻☕
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">203K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">4.1M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 4)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 5 -->
+            <div class="user-card" data-user-id="5">
+                <div class="user-badge">🎭</div>
+                <img src="https://i.pravatar.cc/150?img=9" alt="Avatar" class="user-avatar">
+                <div class="user-name">Paula Humor</div>
+                <div class="user-username">@paulacomedia</div>
+                <div class="user-bio">
+                    Stand-up e criadora de conteúdo. Transformo momentos awkward em comédia 🎤
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">312K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">5.7M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 5)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 6 -->
+            <div class="user-card" data-user-id="6">
+                <div class="user-badge">🏃</div>
+                <img src="https://i.pravatar.cc/150?img=52" alt="Avatar" class="user-avatar">
+                <div class="user-name">Pedro Esportes</div>
+                <div class="user-username">@pedroesportivo</div>
+                <div class="user-bio">
+                    Fanático por futebol que cria memes sobre cada lance polêmico ⚽
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">178K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">2.9M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 6)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 7 -->
+            <div class="user-card" data-user-id="7">
+                <div class="user-badge">🍕</div>
+                <img src="https://i.pravatar.cc/150?img=20" alt="Avatar" class="user-avatar">
+                <div class="user-name">Juliana Food</div>
+                <div class="user-username">@jufoodie</div>
+                <div class="user-bio">
+                    Apaixonada por comida que documenta cada refeição com muito humor 🍔
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">245K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">3.8M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 7)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 8 -->
+            <div class="user-card" data-user-id="8">
+                <div class="user-badge">🐶</div>
+                <img src="https://i.pravatar.cc/150?img=29" alt="Avatar" class="user-avatar">
+                <div class="user-name">Ricardo Pets</div>
+                <div class="user-username">@ricardopets</div>
+                <div class="user-bio">
+                    Veterinário e amante de animais com histórias hilárias de pets 🐾
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">134K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 8)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 9 -->
+            <div class="user-card" data-user-id="9">
+                <div class="user-badge">✈️</div>
+                <img src="https://i.pravatar.cc/150?img=41" alt="Avatar" class="user-avatar">
+                <div class="user-name">Fernanda Travel</div>
+                <div class="user-username">@fetravels</div>
+                <div class="user-bio">
+                    Nômade digital compartilhando perrengues e maravilhas pelo mundo 🌍
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">267K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">4.5M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 9)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 10 -->
+            <div class="user-card" data-user-id="10">
+                <div class="user-badge">🎬</div>
+                <img src="https://i.pravatar.cc/150?img=15" alt="Avatar" class="user-avatar">
+                <div class="user-name">Lucas Cinema</div>
+                <div class="user-username">@lucascinefilo</div>
+                <div class="user-bio">
+                    Crítico de cinema que transforma reviews em comédia stand-up 🎥
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">189K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">3.1M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 10)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 11 -->
+            <div class="user-card" data-user-id="11">
+                <div class="user-badge">🎵</div>
+                <img src="https://i.pravatar.cc/150?img=32" alt="Avatar" class="user-avatar">
+                <div class="user-name">Beatriz Music</div>
+                <div class="user-username">@biamusica</div>
+                <div class="user-bio">
+                    Produtora musical criando memes sobre a indústria da música 🎧
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">221K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">3.6M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 11)">
+                    Seguir
+                </button>
+            </div>
+
+            <!-- User Card 12 -->
+            <div class="user-card" data-user-id="12">
+                <div class="user-badge">📚</div>
+                <img src="https://i.pravatar.cc/150?img=44" alt="Avatar" class="user-avatar">
+                <div class="user-name">Thiago Books</div>
+                <div class="user-username">@thiagolivros</div>
+                <div class="user-bio">
+                    Booktuber que resume livros com muito humor e referências pop 📖
+                </div>
+                <div class="user-stats">
+                    <div class="user-stat">
+                        <span class="user-stat-number">143K</span>
+                        <span class="user-stat-label">Posts</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="user-stat-number">2.2M</span>
+                        <span class="user-stat-label">Seguidores</span>
+                    </div>
+                </div>
+                <button class="btn-follow primary" onclick="toggleFollow(this, 12)">
+                    Seguir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Footer -->
+    <footer class="action-footer">
+        <div class="action-footer-content">
+            <div class="action-info">
+                <div class="action-info-title" id="footerTitle">Explore os criadores acima</div>
+                <div class="action-info-subtitle" id="footerSubtitle">
+                    Você pode seguir todos, alguns ou pular esta etapa
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-action skip" onclick="skipStep()">
+                    Pular
+                </button>
+                <button class="btn-action follow-all" id="btnFollowAll" onclick="followAll()">
+                    Seguir Todos
+                </button>
+                <button class="btn-action continue" id="btnContinue" onclick="continueToApp()" disabled>
+                    Continuar para o Wisnap →
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Configurando seu feed...</div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        ✓ Usuário seguido com sucesso!
+    </div>
+
+    <script>
+        let followedUsers = new Set();
+        const totalUsers = 12;
+
+        function toggleFollow(button, userId) {
+            const card = button.closest('.user-card');
+            const isFollowing = followedUsers.has(userId);
+
+            if (isFollowing) {
+                // Unfollow
+                followedUsers.delete(userId);
+                button.textContent = 'Seguir';
+                button.classList.remove('following');
+                button.classList.add('primary');
+                card.classList.remove('following');
+            } else {
+                // Follow
+                followedUsers.add(userId);
+                button.textContent = '✓ Seguindo';
+                button.classList.remove('primary');
+                button.classList.add('following');
+                card.classList.add('following');
+                showToast('✓ Seguindo ' + card.querySelector('.user-name').textContent);
+            }
+
+            updateUI();
+        }
+
+        function followAll() {
+            const allCards = document.querySelectorAll('.user-card');
+            
+            allCards.forEach(card => {
+                const userId = parseInt(card.dataset.userId);
+                const button = card.querySelector('.btn-follow');
+                
+                if (!followedUsers.has(userId)) {
+                    followedUsers.add(userId);
+                    button.textContent = '✓ Seguindo';
+                    button.classList.remove('primary');
+                    button.classList.add('following');
+                    card.classList.add('following');
+                }
+            });
+
+            updateUI();
+            showToast('✓ Agora você está seguindo todos os criadores!');
+        }
+
+        function unfollowAll() {
+            const allCards = document.querySelectorAll('.user-card');
+            
+            allCards.forEach(card => {
+                const userId = parseInt(card.dataset.userId);
+                const button = card.querySelector('.btn-follow');
+                
+                followedUsers.delete(userId);
+                button.textContent = 'Seguir';
+                button.classList.remove('following');
+                button.classList.add('primary');
+                card.classList.remove('following');
+            });
+
+            updateUI();
+        }
+
+        function updateUI() {
+            const count = followedUsers.size;
+            const followCount = document.getElementById('followCount');
+            const btnFollowAll = document.getElementById('btnFollowAll');
+            const btnContinue = document.getElementById('btnContinue');
+            const footerTitle = document.getElementById('footerTitle');
+            const footerSubtitle = document.getElementById('footerSubtitle');
+
+            // Update counter
+            followCount.textContent = count;
+
+            // Update follow all button
+            if (count === totalUsers) {
+                btnFollowAll.textContent = 'Deixar de Seguir Todos';
+                btnFollowAll.onclick = unfollowAll;
+            } else {
+                btnFollowAll.textContent = 'Seguir Todos';
+                btnFollowAll.onclick = followAll;
+            }
+
+            // Update continue button
+            if (count > 0) {
+                btnContinue.disabled = false;
+                footerTitle.textContent = `Ótimo! ${count} ${count === 1 ? 'criador seguido' : 'criadores seguidos'}`;
+                footerSubtitle.textContent = 'Seu feed já está preparado com conteúdo incrível';
+            } else {
+                btnContinue.disabled = true;
+                footerTitle.textContent = 'Explore os criadores acima';
+                footerSubtitle.textContent = 'Você pode seguir todos, alguns ou pular esta etapa';
+            }
+        }
+
+        function skipStep() {
+            if (confirm('Tem certeza que deseja pular? Seu feed começará vazio.')) {
+                continueToApp();
+            }
+        }
+
+        function continueToApp() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('show');
+
+            // Simulate API call
+            setTimeout(() => {
+                loadingOverlay.classList.remove('show');
+                showToast('🎉 Bem-vindo ao Wisnap!');
+                
+                // Redirect to feed (simulation)
+                setTimeout(() => {
+                    alert('🎉 Cadastro concluído! Redirecionando para o feed...\n\nVocê seguiu ' + followedUsers.size + ' criadores.');
+                }, 1500);
+            }, 2000);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        updateUI();
+    </script>
+</body>
+</html>
