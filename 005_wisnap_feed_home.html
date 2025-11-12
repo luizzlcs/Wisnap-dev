@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisnap - Feed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2B59FF;
+            --secondary-blue: #7398FF;
+            --accent-yellow: #FFD23F;
+            --light-gray: #E2E2E2;
+            --background: #F8F9FA;
+            --dark-text: #0A0E27;
+            --success-green: #10B981;
+            --heart-red: #EF4444;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-blue);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-w {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo-dot {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border: none;
+            font-size: 20px;
+        }
+
+        .header-icon:hover {
+            background: rgba(43, 89, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .header-icon.has-notification::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--heart-red);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* Stories Section */
+        .stories-section {
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            padding: 20px 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .stories-section::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stories-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .story-item {
+            flex-shrink: 0;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .story-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-yellow));
+            padding: 3px;
+            margin-bottom: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .story-item:hover .story-avatar {
+            transform: scale(1.05);
+        }
+
+        .story-avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .story-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-avatar-placeholder {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .story-username {
+            font-size: 12px;
+            color: #6B7280;
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .story-add {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        }
+
+        .story-add-icon {
+            font-size: 32px;
+            color: white;
+        }
+
+        /* Feed Container */
+        .feed-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Post Card */
+        .post-card {
+            background: white;
+            border-radius: 20px;
+            border: 2px solid var(--light-gray);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Post Header */
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            gap: 12px;
+        }
+
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .post-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .post-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark-text);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .post-username:hover {
+            color: var(--primary-blue);
+        }
+
+        .post-time {
+            font-size: 13px;
+            color: #9CA3AF;
+        }
+
+        .post-menu {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .post-menu:hover {
+            background: var(--background);
+        }
+
+        /* Post Image */
+        .post-image-container {
+            position: relative;
+            width: 100%;
+            background: var(--background);
+            cursor: pointer;
+        }
+
+        .post-image {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            aspect-ratio: 1 / 1;
+        }
+
+        .post-ai-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 6px 12px 6px 8px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .badge-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-logo-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-blue);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .badge-logo-w {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .badge-logo-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+        }
+
+        .badge-ai-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            letter-spacing: 0.5px;
+        }
+
+        .badge-app-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        /* Post Prompt */
+        .post-prompt {
+            padding: 16px 20px;
+            background: rgba(43, 89, 255, 0.05);
+            border-top: 1px solid var(--light-gray);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .post-prompt-text {
+            display: flex;
+            align-items: start;
+            gap: 8px;
+            font-size: 15px;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .prompt-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Post Actions */
+        .post-actions {
+            padding: 16px 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+
+        .action-button:hover {
+            background: var(--background);
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .action-button.liked .action-icon {
+            color: var(--heart-red);
+            animation: heartBeat 0.3s ease;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .action-count {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .action-button.liked .action-count {
+            color: var(--heart-red);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid var(--light-gray);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .bottom-nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: none;
+            border: none;
+            flex: 1;
+        }
+
+        .nav-item:hover {
+            background: var(--background);
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #6B7280;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        /* Create Button (Center) */
+        .nav-item.create-button {
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .create-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.create-button:hover .create-icon-wrapper {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(43, 89, 255, 0.4);
+        }
+
+        .create-icon-wrapper .nav-icon {
+            color: white;
+            font-size: 28px;
+        }
+
+        /* Loading Spinner */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-gray);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 16px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .logo-w {
+                font-size: 20px;
+            }
+
+            .header-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            .feed-container {
+                padding: 16px 12px;
+            }
+
+            .post-card {
+                border-radius: 16px;
+            }
+
+            .stories-container {
+                padding: 0 12px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-card {
+            animation: fadeInUp 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <div class="logo-w">
+                        W
+                        <div class="logo-dot"></div>
+                    </div>
+                </div>
+                <span class="logo-text">wisnap</span>
+            </a>
+            
+            <div class="header-actions">
+                <button class="header-icon" onclick="openSearch()">🔍</button>
+                <button class="header-icon has-notification" onclick="openNotifications()">🔔</button>
+                <button class="header-icon" onclick="openMessages()">💬</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stories Section -->
+    <section class="stories-section">
+        <div class="stories-container">
+            <!-- Add Story -->
+            <div class="story-item" onclick="createStory()">
+                <div class="story-avatar story-add">
+                    <div class="story-avatar-inner">
+                        <span class="story-add-icon">+</span>
+                    </div>
+                </div>
+                <div class="story-username">Sua história</div>
+            </div>
+
+            <!-- Story 1 -->
+            <div class="story-item">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Maria" class="story-avatar-img">
+                    </div>
+                </div>
+                <div class="story-username">mariamemes</div>
+            </div>
+
+            <!-- Story 2 -->
+            <div class="story-item">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="João" class="story-avatar-img">
+                    </div>
+                </div>
+                <div class="story-username">joaozueiro</div>
+            </div>
+
+            <!-- Story 3 -->
+            <div class="story-item">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">
+                        <img src="https://i.pravatar.cc/150?img=47" alt="Ana" class="story-avatar-img">
+                    </div>
+                </div>
+                <div class="story-username">anacriativa</div>
+            </div>
+
+            <!-- Story 4 -->
+            <div class="story-item">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">
+                        <img src="https://i.pravatar.cc/150?img=68" alt="Carlos" class="story-avatar-img">
+                    </div>
+                </div>
+                <div class="story-username">carlosdev</div>
+            </div>
+
+            <!-- Story 5 -->
+            <div class="story-item">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">
+                        <img src="https://i.pravatar.cc/150?img=9" alt="Paula" class="story-avatar-img">
+                    </div>
+                </div>
+                <div class="story-username">paulacomedia</div>
+            </div>
+
+            <!-- Story 6 -->
+            <div class="story-item">
+                <div class="story-avatar">
+                    <div class="story-avatar-inner">
+                        <img src="https://i.pravatar.cc/150?img=52" alt="Pedro" class="story-avatar-img">
+                    </div>
+                </div>
+                <div class="story-username">pedroesportivo</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feed Container -->
+    <main class="feed-container" id="feedContainer">
+        <!-- Post 1 -->
+        <article class="post-card">
+            <div class="post-header">
+                <div class="post-avatar">
+                    <img src="https://i.pravatar.cc/150?img=12" alt="Maria" class="post-avatar-img">
+                </div>
+                <div class="post-info">
+                    <div class="post-username">@mariamemes</div>
+                    <div class="post-time">há 2 horas</div>
+                </div>
+                <button class="post-menu">⋯</button>
+            </div>
+            
+            <div class="post-image-container" onclick="openPost(1)">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=800&fit=crop" alt="Post" class="post-image">
+                <div class="post-ai-badge">
+                    <div class="badge-logo-container">
+                        <div class="badge-logo-icon">
+                            <div class="badge-logo-w">
+                                W
+                                <div class="badge-logo-dot"></div>
+                            </div>
+                        </div>
+                        <span class="badge-ai-text">IA</span>
+                        <span class="badge-app-name">wisnap</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-prompt">
+                <div class="post-prompt-text">
+                    <span class="prompt-icon">💭</span>
+                    <span>"meu chefe como entregador de pizza"</span>
+                </div>
+            </div>
+            
+            <div class="post-actions">
+                <button class="action-button" onclick="toggleLike(this)">
+                    <span class="action-icon">❤️</span>
+                    <span class="action-count">847</span>
+                </button>
+                <button class="action-button" onclick="openComments(1)">
+                    <span class="action-icon">💬</span>
+                    <span class="action-count">89</span>
+                </button>
+                <button class="action-button" onclick="sharePost(1)">
+                    <span class="action-icon">↗️</span>
+                    <span class="action-count">42</span>
+                </button>
+            </div>
+        </article>
+
+        <!-- Post 2 -->
+        <article class="post-card">
+            <div class="post-header">
+                <div class="post-avatar">
+                    <img src="https://i.pravatar.cc/150?img=33" alt="João" class="post-avatar-img">
+                </div>
+                <div class="post-info">
+                    <div class="post-username">@joaozueiro</div>
+                    <div class="post-time">há 4 horas</div>
+                </div>
+                <button class="post-menu">⋯</button>
+            </div>
+            
+            <div class="post-image-container" onclick="openPost(2)">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=800&fit=crop" alt="Post" class="post-image">
+                <div class="post-ai-badge">
+                    <div class="badge-logo-container">
+                        <div class="badge-logo-icon">
+                            <div class="badge-logo-w">
+                                W
+                                <div class="badge-logo-dot"></div>
+                            </div>
+                        </div>
+                        <span class="badge-ai-text">IA</span>
+                        <span class="badge-app-name">wisnap</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-prompt">
+                <div class="post-prompt-text">
+                    <span class="prompt-icon">💭</span>
+                    <span>"astronauta plantando flores na lua"</span>
+                </div>
+            </div>
+            
+            <div class="post-actions">
+                <button class="action-button" onclick="toggleLike(this)">
+                    <span class="action-icon">❤️</span>
+                    <span class="action-count">1.2k</span>
+                </button>
+                <button class="action-button" onclick="openComments(2)">
+                    <span class="action-icon">💬</span>
+                    <span class="action-count">156</span>
+                </button>
+                <button class="action-button" onclick="sharePost(2)">
+                    <span class="action-icon">↗️</span>
+                    <span class="action-count">67</span>
+                </button>
+            </div>
+        </article>
+
+        <!-- Post 3 -->
+        <article class="post-card">
+            <div class="post-header">
+                <div class="post-avatar">
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Ana" class="post-avatar-img">
+                </div>
+                <div class="post-info">
+                    <div class="post-username">@anacriativa</div>
+                    <div class="post-time">há 6 horas</div>
+                </div>
+                <button class="post-menu">⋯</button>
+            </div>
+            
+            <div class="post-image-container" onclick="openPost(3)">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=800&fit=crop" alt="Post" class="post-image">
+                <div class="post-ai-badge">
+                    <div class="badge-logo-container">
+                        <div class="badge-logo-icon">
+                            <div class="badge-logo-w">
+                                W
+                                <div class="badge-logo-dot"></div>
+                            </div>
+                        </div>
+                        <span class="badge-ai-text">IA</span>
+                        <span class="badge-app-name">wisnap</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-prompt">
+                <div class="post-prompt-text">
+                    <span class="prompt-icon">💭</span>
+                    <span>"político fazendo atendimento ao cliente"</span>
+                </div>
+            </div>
+            
+            <div class="post-actions">
+                <button class="action-button" onclick="toggleLike(this)">
+                    <span class="action-icon">❤️</span>
+                    <span class="action-count">2.1k</span>
+                </button>
+                <button class="action-button" onclick="openComments(3)">
+                    <span class="action-icon">💬</span>
+                    <span class="action-count">312</span>
+                </button>
+                <button class="action-button" onclick="sharePost(3)">
+                    <span class="action-icon">↗️</span>
+                    <span class="action-count">89</span>
+                </button>
+            </div>
+        </article>
+
+        <!-- Post 4 -->
+        <article class="post-card">
+            <div class="post-header">
+                <div class="post-avatar">
+                    <img src="https://i.pravatar.cc/150?img=68" alt="Carlos" class="post-avatar-img">
+                </div>
+                <div class="post-info">
+                    <div class="post-username">@carlosdev</div>
+                    <div class="post-time">há 8 horas</div>
+                </div>
+                <button class="post-menu">⋯</button>
+            </div>
+            
+            <div class="post-image-container" onclick="openPost(4)">
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=800&fit=crop" alt="Post" class="post-image">
+                <div class="post-ai-badge">
+                    <div class="badge-logo-container">
+                        <div class="badge-logo-icon">
+                            <div class="badge-logo-w">
+                                W
+                                <div class="badge-logo-dot"></div>
+                            </div>
+                        </div>
+                        <span class="badge-ai-text">IA</span>
+                        <span class="badge-app-name">wisnap</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-prompt">
+                <div class="post-prompt-text">
+                    <span class="prompt-icon">💭</span>
+                    <span>"programador virando super-herói depois de 10 cafés"</span>
+                </div>
+            </div>
+            
+            <div class="post-actions">
+                <button class="action-button" onclick="toggleLike(this)">
+                    <span class="action-icon">❤️</span>
+                    <span class="action-count">934</span>
+                </button>
+                <button class="action-button" onclick="openComments(4)">
+                    <span class="action-icon">💬</span>
+                    <span class="action-count">127</span>
+                </button>
+                <button class="action-button" onclick="sharePost(4)">
+                    <span class="action-icon">↗️</span>
+                    <span class="action-count">56</span>
+                </button>
+            </div>
+        </article>
+
+        <!-- Loading Indicator -->
+        <div class="loading-container" id="loadingIndicator" style="display: none;">
+            <div class="loading-spinner"></div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container">
+            <button class="nav-item active" onclick="navigateTo('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Início</span>
+            </button>
+            
+            <button class="nav-item" onclick="navigateTo('explore')">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Explorar</span>
+            </button>
+            
+            <button class="nav-item create-button" onclick="createPost()">
+                <div class="create-icon-wrapper">
+                    <span class="nav-icon">+</span>
+                </div>
+            </button>
+            
+            <button class="nav-item" onclick="navigateTo('notifications')">
+                <span class="nav-icon">🔔</span>
+                <span class="nav-label">Notificações</span>
+            </button>
+            
+            <button class="nav-item" onclick="navigateTo('profile')">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Perfil</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Infinite Scroll
+        let page = 1;
+        let isLoading = false;
+
+        window.addEventListener('scroll', () => {
+            if (isLoading) return;
+            
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            
+            if (scrollTop + clientHeight >= scrollHeight - 500) {
+                loadMorePosts();
+            }
+        });
+
+        function loadMorePosts() {
+            isLoading = true;
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'flex';
+            
+            // Simulate API call
+            setTimeout(() => {
+                const feedContainer = document.getElementById('feedContainer');
+                const newPost = createPostElement(page);
+                feedContainer.insertBefore(newPost, loadingIndicator);
+                
+                page++;
+                isLoading = false;
+                loadingIndicator.style.display = 'none';
+            }, 1000);
+        }
+
+        function createPostElement(index) {
+            const users = [
+                { name: '@paulacomedia', avatar: 9, img: 'photo-1550751827-4bd374c3f58b', prompt: 'stand-up comedian virando presidente da república' },
+                { name: '@pedroesportivo', avatar: 52, img: 'photo-1461988320302-91bde64fc8e4', prompt: 'torcedor virando técnico de futebol por um dia' },
+                { name: '@jufoodie', avatar: 20, img: 'photo-1504674900247-0877df9cc836', prompt: 'chef de cozinha preparando comida no espaço' },
+                { name: '@ricardopets', avatar: 29, img: 'photo-1530281700549-e82e7bf110d6', prompt: 'cachorro virando CEO de empresa' }
+            ];
+            
+            const user = users[index % users.length];
+            
+            const article = document.createElement('article');
+            article.className = 'post-card';
+            article.innerHTML = `
+                <div class="post-header">
+                    <div class="post-avatar">
+                        <img src="https://i.pravatar.cc/150?img=${user.avatar}" alt="Avatar" class="post-avatar-img">
+                    </div>
+                    <div class="post-info">
+                        <div class="post-username">${user.name}</div>
+                        <div class="post-time">há ${8 + index * 2} horas</div>
+                    </div>
+                    <button class="post-menu">⋯</button>
+                </div>
+                
+                <div class="post-image-container" onclick="openPost(${index + 5})">
+                    <img src="https://images.unsplash.com/${user.img}?w=800&h=800&fit=crop" alt="Post" class="post-image">
+                    <div class="post-ai-badge">
+                        <div class="badge-logo-container">
+                            <div class="badge-logo-icon">
+                                <div class="badge-logo-w">
+                                    W
+                                    <div class="badge-logo-dot"></div>
+                                </div>
+                            </div>
+                            <span class="badge-ai-text">IA</span>
+                            <span class="badge-app-name">wisnap</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-prompt">
+                    <div class="post-prompt-text">
+                        <span class="prompt-icon">💭</span>
+                        <span>"${user.prompt}"</span>
+                    </div>
+                </div>
+                
+                <div class="post-actions">
+                    <button class="action-button" onclick="toggleLike(this)">
+                        <span class="action-icon">❤️</span>
+                        <span class="action-count">${Math.floor(Math.random() * 2000) + 500}</span>
+                    </button>
+                    <button class="action-button" onclick="openComments(${index + 5})">
+                        <span class="action-icon">💬</span>
+                        <span class="action-count">${Math.floor(Math.random() * 300) + 50}</span>
+                    </button>
+                    <button class="action-button" onclick="sharePost(${index + 5})">
+                        <span class="action-icon">↗️</span>
+                        <span class="action-count">${Math.floor(Math.random() * 100) + 20}</span>
+                    </button>
+                </div>
+            `;
+            
+            return article;
+        }
+
+        // Like/Unlike
+        function toggleLike(button) {
+            const isLiked = button.classList.contains('liked');
+            const countElement = button.querySelector('.action-count');
+            let count = parseInt(countElement.textContent.replace('k', '00').replace('.', ''));
+            
+            if (isLiked) {
+                button.classList.remove('liked');
+                count--;
+            } else {
+                button.classList.add('liked');
+                count++;
+            }
+            
+            // Format count
+            if (count >= 1000) {
+                countElement.textContent = (count / 1000).toFixed(1) + 'k';
+            } else {
+                countElement.textContent = count;
+            }
+        }
+
+        // Navigation
+        function navigateTo(section) {
+            // Remove active from all
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active to clicked
+            event.currentTarget.classList.add('active');
+            
+            // Simulate navigation
+            console.log('Navigating to:', section);
+            alert(`Navegando para: ${section}`);
+        }
+
+        // Header Actions
+        function openSearch() {
+            alert('🔍 Abrindo busca...');
+        }
+
+        function openNotifications() {
+            alert('🔔 Abrindo notificações...');
+        }
+
+        function openMessages() {
+            alert('💬 Abrindo mensagens...');
+        }
+
+        // Post Actions
+        function openPost(id) {
+            alert(`📱 Abrindo post ${id} em tela cheia...`);
+        }
+
+        function openComments(id) {
+            alert(`💬 Abrindo comentários do post ${id}...`);
+        }
+
+        function sharePost(id) {
+            alert(`↗️ Compartilhando post ${id}...`);
+        }
+
+        // Create
+        function createPost() {
+            alert('➕ Abrindo tela de criação...\n\n📸 Upload → 💭 Descrição → ✨ IA → 🚀 Publicar');
+        }
+
+        function createStory() {
+            alert('➕ Criando história...');
+        }
+    </script>
+</body>
+</html>
