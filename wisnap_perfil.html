@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisnap - Meu Perfil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2B59FF;
+            --secondary-blue: #7398FF;
+            --accent-yellow: #FFD23F;
+            --light-gray: #E2E2E2;
+            --background: #F8F9FA;
+            --dark-text: #0A0E27;
+            --success-green: #10B981;
+            --heart-red: #EF4444;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Logo Wisnap (igual landing page) */
+        .wisnap-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .logo-w-container {
+            position: relative;
+        }
+
+        .logo-w {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--primary-blue);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 20px;
+        }
+
+        .header-icon:hover {
+            background: rgba(43, 89, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Profile Header Section */
+        .profile-header {
+            background: white;
+            padding: 32px 20px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .profile-top {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-avatar-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 36px;
+            height: 36px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-verified {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .profile-username {
+            font-size: 16px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+
+        .profile-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .profile-bio {
+            font-size: 15px;
+            color: var(--dark-text);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .profile-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Statistics Section */
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: white;
+            margin-bottom: 2px;
+        }
+
+        .stat-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .stat-item:hover {
+            background: var(--background);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'Roboto', sans-serif;
+            border: none;
+        }
+
+        .btn-action.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-action.primary:hover {
+            background: #1E3FCC;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43, 89, 255, 0.3);
+        }
+
+        .btn-action.secondary {
+            background: var(--background);
+            color: var(--dark-text);
+            border: 2px solid var(--light-gray);
+        }
+
+        .btn-action.secondary:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            position: sticky;
+            top: 72px;
+            z-index: 100;
+        }
+
+        .tab-item {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-item:hover {
+            color: var(--primary-blue);
+            background: var(--background);
+        }
+
+        .tab-item.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-count {
+            background: var(--light-gray);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .tab-item.active .tab-count {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* Content Grid */
+        .content-section {
+            display: none;
+            padding: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+
+        .grid-item {
+            aspect-ratio: 1 / 1;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            background: var(--light-gray);
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .grid-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            opacity: 0;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .grid-item:hover .grid-item-overlay {
+            opacity: 1;
+        }
+
+        .grid-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+        }
+
+        .empty-message {
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 24px;
+        }
+
+        .btn-empty {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 24px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-empty:hover {
+            background: #1E3FCC;
+            transform: translateY(-2px);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid var(--light-gray);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .bottom-nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: none;
+            border: none;
+            flex: 1;
+        }
+
+        .nav-item:hover {
+            background: var(--background);
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #6B7280;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .nav-item.create-button {
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .create-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.create-button:hover .create-icon-wrapper {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(43, 89, 255, 0.4);
+        }
+
+        .create-icon-wrapper .nav-icon {
+            color: white;
+            font-size: 28px;
+        }
+
+        /* Modal de Ampliar Foto */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .modal-image {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-top {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+            }
+
+            .profile-name {
+                justify-content: center;
+            }
+
+            .profile-meta {
+                justify-content: center;
+            }
+
+            .content-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section.active {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="wisnap-logo" onclick="navigateTo('home')">
+                <div class="logo-w-container">
+                    <div class="logo-w">W</div>
+                    <div class="logo-dot"></div>
+                </div>
+                <span class="logo-text">wisnap</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="header-icon" onclick="openNotifications()">🔔</button>
+                <button class="header-icon" onclick="openMenu()">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Profile Header Section -->
+        <section class="profile-header">
+            <div class="profile-top">
+                <div class="profile-avatar-container">
+                    <img src="https://i.pravatar.cc/300?img=68" 
+                         alt="Foto de Perfil" 
+                         class="profile-avatar"
+                         onclick="openAvatarModal()">
+                    <div class="profile-avatar-badge">✨</div>
+                </div>
+                
+                <div class="profile-info">
+                    <h1 class="profile-name">
+                        Maria Santos
+                        <span class="profile-verified">✓</span>
+                    </h1>
+                    <div class="profile-username">@mariasantos</div>
+                    
+                    <div class="profile-type-badge">
+                        🎨 Criadora de Conteúdo
+                    </div>
+                    
+                    <p class="profile-bio">
+                        Transformando ideias em humor viral 🚀 | Designer & Criadora | 
+                        Apaixonada por IA e criatividade ✨
+                    </p>
+                    
+                    <div class="profile-meta">
+                        <div class="profile-meta-item">
+                            📍 São Paulo, BR
+                        </div>
+                        <div class="profile-meta-item">
+                            🔗 mariasantos.com
+                        </div>
+                        <div class="profile-meta-item">
+                            📅 Entrou em jan/2025
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="profile-stats">
+            <div class="stat-item" onclick="viewPosts()">
+                <div class="stat-number">127</div>
+                <div class="stat-label">Publicações</div>
+            </div>
+            
+            <div class="stat-item" onclick="viewFollowers()">
+                <div class="stat-number">12.5k</div>
+                <div class="stat-label">Seguidores</div>
+            </div>
+            
+            <div class="stat-item" onclick="viewFollowing()">
+                <div class="stat-number">834</div>
+                <div class="stat-label">Seguindo</div>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="profile-actions">
+            <button class="btn-action primary" onclick="window.location.href='wisnap_editar_perfil.html'">
+                ✏️ Editar Perfil
+            </button>
+            
+            <button class="btn-action secondary" onclick="shareProfile()">
+                🔗 Compartilhar
+            </button>
+            
+            <button class="btn-action secondary" onclick="openSettings()">
+                ⚙️
+            </button>
+        </section>
+
+        <!-- Tabs Navigation -->
+        <nav class="tabs-nav">
+            <button class="tab-item active" onclick="switchTab('posts')">
+                <span>📱 Publicações</span>
+                <span class="tab-count">127</span>
+            </button>
+            
+            <button class="tab-item" onclick="switchTab('saved')">
+                <span>💾 Salvos</span>
+                <span class="tab-count">43</span>
+            </button>
+            
+            <button class="tab-item" onclick="switchTab('liked')">
+                <span>❤️ Curtidos</span>
+                <span class="tab-count">892</span>
+            </button>
+        </nav>
+
+        <!-- Content: Posts -->
+        <section class="content-section active" id="posts-content">
+            <div class="content-grid">
+                <!-- Post 1 -->
+                <div class="grid-item" onclick="openPost(1)">
+                    <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 2.5k</div>
+                        <div class="grid-stat">💬 189</div>
+                    </div>
+                </div>
+                
+                <!-- Post 2 -->
+                <div class="grid-item" onclick="openPost(2)">
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 3.2k</div>
+                        <div class="grid-stat">💬 234</div>
+                    </div>
+                </div>
+                
+                <!-- Post 3 -->
+                <div class="grid-item" onclick="openPost(3)">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 1.8k</div>
+                        <div class="grid-stat">💬 142</div>
+                    </div>
+                </div>
+                
+                <!-- Post 4 -->
+                <div class="grid-item" onclick="openPost(4)">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 4.1k</div>
+                        <div class="grid-stat">💬 367</div>
+                    </div>
+                </div>
+                
+                <!-- Post 5 -->
+                <div class="grid-item" onclick="openPost(5)">
+                    <img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 2.9k</div>
+                        <div class="grid-stat">💬 198</div>
+                    </div>
+                </div>
+                
+                <!-- Post 6 -->
+                <div class="grid-item" onclick="openPost(6)">
+                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 3.7k</div>
+                        <div class="grid-stat">💬 289</div>
+                    </div>
+                </div>
+                
+                <!-- Post 7 -->
+                <div class="grid-item" onclick="openPost(7)">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 5.2k</div>
+                        <div class="grid-stat">💬 412</div>
+                    </div>
+                </div>
+                
+                <!-- Post 8 -->
+                <div class="grid-item" onclick="openPost(8)">
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 2.1k</div>
+                        <div class="grid-stat">💬 156</div>
+                    </div>
+                </div>
+                
+                <!-- Post 9 -->
+                <div class="grid-item" onclick="openPost(9)">
+                    <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 6.8k</div>
+                        <div class="grid-stat">💬 534</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content: Saved -->
+        <section class="content-section" id="saved-content">
+            <div class="content-grid">
+                <!-- Saved posts (similar structure) -->
+                <div class="grid-item" onclick="openPost(10)">
+                    <img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 8.3k</div>
+                        <div class="grid-stat">💬 621</div>
+                    </div>
+                </div>
+                
+                <div class="grid-item" onclick="openPost(11)">
+                    <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 4.5k</div>
+                        <div class="grid-stat">💬 312</div>
+                    </div>
+                </div>
+                
+                <div class="grid-item" onclick="openPost(12)">
+                    <img src="https://images.unsplash.com/photo-1500622944204-b135684e99fd?w=300&h=300&fit=crop" alt="Post">
+                    <div class="grid-item-overlay">
+                        <div class="grid-stat">❤️ 7.1k</div>
+                        <div class="grid-stat">💬 489</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content: Liked -->
+        <section class="content-section" id="liked-content">
+            <div class="empty-state">
+                <div class="empty-icon">❤️</div>
+                <h3 class="empty-title">Suas curtidas são privadas</h3>
+                <p class="empty-message">
+                    Apenas você pode ver os posts que curtiu
+                </p>
+                <button class="btn-empty" onclick="switchTab('posts')">
+                    Ver Minhas Publicações
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container">
+            <button class="nav-item" onclick="navigateTo('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Início</span>
+            </button>
+            
+            <button class="nav-item" onclick="window.location.href='wisnap_explorar.html'">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Explorar</span>
+            </button>
+            
+            <button class="nav-item create-button" onclick="createPost()">
+                <div class="create-icon-wrapper">
+                    <span class="nav-icon">+</span>
+                </div>
+            </button>
+            
+            <button class="nav-item" onclick="navigateTo('notifications')">
+                <span class="nav-icon">🔔</span>
+                <span class="nav-label">Notificações</span>
+            </button>
+            
+            <button class="nav-item active" onclick="navigateTo('profile')">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Perfil</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Modal de Ampliar Foto -->
+    <div class="modal" id="avatarModal" onclick="closeAvatarModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeAvatarModal()">×</button>
+            <img src="https://i.pravatar.cc/600?img=68" alt="Foto de Perfil" class="modal-image">
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function navigateTo(section) {
+            console.log('Navigating to:', section);
+            alert(`Navegando para: ${section}`);
+        }
+
+        // Tabs
+        function switchTab(tab) {
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Hide all content
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            event.currentTarget.classList.add('active');
+            
+            // Show selected content
+            document.getElementById(`${tab}-content`).classList.add('active');
+        }
+
+        // Profile Actions
+        function editProfile() {
+            alert('✏️ Abrindo editor de perfil...\n\n• Editar foto\n• Alterar nome\n• Atualizar bio\n• Mudar tipo de usuário');
+        }
+
+        function shareProfile() {
+            alert('🔗 Compartilhar perfil:\n\nLink copiado!\nwisnap.com/@mariasantos\n\nCompartilhe em:\n• WhatsApp\n• Instagram\n• Twitter/X');
+        }
+
+        function openSettings() {
+            alert('⚙️ Configurações:\n\n• Privacidade\n• Notificações\n• Conta\n• Sobre');
+        }
+
+        // Stats Actions
+        function viewPosts() {
+            switchTab('posts');
+        }
+
+        function viewFollowers() {
+            alert('👥 12.5k Seguidores\n\nAbrindo lista de seguidores...');
+        }
+
+        function viewFollowing() {
+            alert('👥 834 Seguindo\n\nAbrindo lista de pessoas que você segue...');
+        }
+
+        // Avatar Modal
+        function openAvatarModal() {
+            document.getElementById('avatarModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAvatarModal() {
+            document.getElementById('avatarModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Open Post
+        function openPost(id) {
+            alert(`📱 Abrindo post ${id} em fullscreen...`);
+        }
+
+        // Header Actions
+        function openNotifications() {
+            alert('🔔 Abrindo notificações...');
+        }
+
+        function openMenu() {
+            alert('☰ Menu:\n\n• Rascunhos\n• Arquivados\n• Favoritos\n• Ajuda');
+        }
+
+        // Create Post
+        function createPost() {
+            alert('➕ Abrindo tela de criação...\n\n📸 Upload → 💭 Descrição → ✨ IA → 🚀 Publicar');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAvatarModal();
+            }
+        });
+    </script>
+</body>
+</html>

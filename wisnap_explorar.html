@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisnap - Explorar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2B59FF;
+            --secondary-blue: #7398FF;
+            --accent-yellow: #FFD23F;
+            --light-gray: #E2E2E2;
+            --background: #F8F9FA;
+            --dark-text: #0A0E27;
+            --success-green: #10B981;
+            --heart-red: #EF4444;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .wisnap-logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-w {
+            position: relative;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-dot {
+            position: absolute;
+            top: -2px;
+            right: -4px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 300;
+            color: var(--primary-blue);
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 20px;
+        }
+
+        .header-icon:hover {
+            background: rgba(43, 89, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 14px 48px 14px 48px;
+            border: 2px solid var(--light-gray);
+            border-radius: 24px;
+            font-size: 15px;
+            font-family: 'Roboto', sans-serif;
+            transition: all 0.2s ease;
+            background: var(--background);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(43, 89, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #9CA3AF;
+        }
+
+        .search-filter {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: var(--primary-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        .search-filter:hover {
+            background: #1E3FCC;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-emoji {
+            font-size: 24px;
+        }
+
+        .section-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .section-link:hover {
+            color: #1E3FCC;
+        }
+
+        /* Trending Grid */
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .trending-card {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .trending-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .trending-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .trending-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 16px;
+            color: white;
+        }
+
+        .trending-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trending-badge.top1 {
+            background: linear-gradient(135deg, #FFD23F, #FFA500);
+            color: white;
+        }
+
+        .trending-engagement {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .trending-prompt {
+            font-size: 12px;
+            margin-top: 4px;
+            opacity: 0.9;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Creators Scroll */
+        .creators-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+        }
+
+        .creators-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .creator-card {
+            flex-shrink: 0;
+            width: 160px;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .creator-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.15);
+        }
+
+        .creator-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+        }
+
+        .creator-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .creator-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 28px;
+            height: 28px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+            border: 3px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .creator-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+        }
+
+        .creator-username {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 12px;
+        }
+
+        .creator-followers {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-bottom: 12px;
+        }
+
+        .btn-follow {
+            width: 100%;
+            padding: 8px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-follow:hover {
+            background: #1E3FCC;
+            transform: scale(1.05);
+        }
+
+        .btn-follow.following {
+            background: var(--background);
+            color: var(--dark-text);
+            border: 2px solid var(--light-gray);
+        }
+
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .category-card {
+            aspect-ratio: 1 / 1;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.15);
+        }
+
+        .category-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .category-count {
+            font-size: 11px;
+            color: #9CA3AF;
+        }
+
+        /* Top Week Grid */
+        .top-week-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .top-card {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .top-card:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.15);
+        }
+
+        .top-rank {
+            width: 60px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .top-rank.gold {
+            background: linear-gradient(135deg, #FFD23F, #FFA500);
+        }
+
+        .top-rank.silver {
+            background: linear-gradient(135deg, #E5E7EB, #9CA3AF);
+        }
+
+        .top-rank.bronze {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+        }
+
+        .top-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .top-content {
+            flex: 1;
+            padding: 16px 16px 16px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .top-creator {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+        }
+
+        .top-prompt {
+            font-size: 14px;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .top-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        /* For You Grid */
+        .for-you-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .for-you-card {
+            aspect-ratio: 1 / 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .for-you-card:hover {
+            transform: scale(1.05);
+        }
+
+        .for-you-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .for-you-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid var(--light-gray);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .bottom-nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: none;
+            border: none;
+            flex: 1;
+        }
+
+        .nav-item:hover {
+            background: var(--background);
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #6B7280;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .nav-item.create-button {
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .create-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.create-button:hover .create-icon-wrapper {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(43, 89, 255, 0.4);
+        }
+
+        .create-icon-wrapper .nav-icon {
+            color: white;
+            font-size: 28px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 16px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .trending-grid {
+                gap: 8px;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .for-you-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .top-image {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeInUp 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <div class="header-left">
+                    <div class="wisnap-logo">
+                        <div class="logo-w">
+                            W
+                            <div class="logo-dot"></div>
+                        </div>
+                        <span class="logo-text">wisnap</span>
+                    </div>
+                    <span style="color: var(--light-gray); font-size: 20px;">|</span>
+                    <h1 class="header-title">Explorar</h1>
+                </div>
+                <button class="header-icon" onclick="openNotifications()">🔔</button>
+            </div>
+            
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input 
+                    type="text" 
+                    class="search-bar" 
+                    placeholder="Buscar criadores, temas ou prompts..."
+                    onclick="openSearch()"
+                >
+                <button class="search-filter" onclick="openFilters()">⚙️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Section 1: Em Alta (Trending) -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">🔥</span>
+                    Em Alta
+                </h2>
+                <a class="section-link" onclick="viewAll('trending')">Ver todos</a>
+            </div>
+            
+            <div class="trending-grid">
+                <div class="trending-card" onclick="openPost(1)">
+                    <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=400&h=400&fit=crop" 
+                         alt="Trending" class="trending-image">
+                    <div class="trending-badge top1">
+                        🔥 #1
+                    </div>
+                    <div class="trending-overlay">
+                        <div class="trending-engagement">
+                            <span>❤️ 12.5k</span>
+                            <span>💬 892</span>
+                        </div>
+                        <div class="trending-prompt">💭 "astronauta plantando flores na lua"</div>
+                    </div>
+                </div>
+                
+                <div class="trending-card" onclick="openPost(2)">
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=400&fit=crop" 
+                         alt="Trending" class="trending-image">
+                    <div class="trending-badge">
+                        🔥 #2
+                    </div>
+                    <div class="trending-overlay">
+                        <div class="trending-engagement">
+                            <span>❤️ 10.2k</span>
+                            <span>💬 743</span>
+                        </div>
+                        <div class="trending-prompt">💭 "chef cozinhando no espaço"</div>
+                    </div>
+                </div>
+                
+                <div class="trending-card" onclick="openPost(3)">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=400&fit=crop" 
+                         alt="Trending" class="trending-image">
+                    <div class="trending-badge">
+                        🔥 #3
+                    </div>
+                    <div class="trending-overlay">
+                        <div class="trending-engagement">
+                            <span>❤️ 8.9k</span>
+                            <span>💬 621</span>
+                        </div>
+                        <div class="trending-prompt">💭 "político fazendo atendimento"</div>
+                    </div>
+                </div>
+                
+                <div class="trending-card" onclick="openPost(4)">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=400&fit=crop" 
+                         alt="Trending" class="trending-image">
+                    <div class="trending-badge">
+                        🔥 #4
+                    </div>
+                    <div class="trending-overlay">
+                        <div class="trending-engagement">
+                            <span>❤️ 7.3k</span>
+                            <span>💬 534</span>
+                        </div>
+                        <div class="trending-prompt">💭 "programador super-herói"</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Novos Criadores (New Creators) -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">🆕</span>
+                    Novos Criadores
+                </h2>
+                <a class="section-link" onclick="viewAll('creators')">Ver todos</a>
+            </div>
+            
+            <div class="creators-scroll">
+                <div class="creator-card" onclick="viewProfile('@novacriadora')">
+                    <div class="creator-avatar">
+                        <img src="https://i.pravatar.cc/150?img=5" alt="Creator" class="creator-avatar-img">
+                        <div class="creator-badge">✨</div>
+                    </div>
+                    <div class="creator-name">Ana Silva</div>
+                    <div class="creator-username">@novacriadora</div>
+                    <div class="creator-followers">2.5k seguidores</div>
+                    <button class="btn-follow" onclick="toggleFollow(event, 1)">Seguir</button>
+                </div>
+                
+                <div class="creator-card" onclick="viewProfile('@criativos')">
+                    <div class="creator-avatar">
+                        <img src="https://i.pravatar.cc/150?img=13" alt="Creator" class="creator-avatar-img">
+                        <div class="creator-badge">✨</div>
+                    </div>
+                    <div class="creator-name">Bruno Costa</div>
+                    <div class="creator-username">@criativos</div>
+                    <div class="creator-followers">1.8k seguidores</div>
+                    <button class="btn-follow" onclick="toggleFollow(event, 2)">Seguir</button>
+                </div>
+                
+                <div class="creator-card" onclick="viewProfile('@artedigital')">
+                    <div class="creator-avatar">
+                        <img src="https://i.pravatar.cc/150?img=27" alt="Creator" class="creator-avatar-img">
+                        <div class="creator-badge">✨</div>
+                    </div>
+                    <div class="creator-name">Carla Dias</div>
+                    <div class="creator-username">@artedigital</div>
+                    <div class="creator-followers">3.2k seguidores</div>
+                    <button class="btn-follow" onclick="toggleFollow(event, 3)">Seguir</button>
+                </div>
+                
+                <div class="creator-card" onclick="viewProfile('@humorista')">
+                    <div class="creator-avatar">
+                        <img src="https://i.pravatar.cc/150?img=31" alt="Creator" class="creator-avatar-img">
+                        <div class="creator-badge">✨</div>
+                    </div>
+                    <div class="creator-name">Daniel Ramos</div>
+                    <div class="creator-username">@humorista</div>
+                    <div class="creator-followers">4.1k seguidores</div>
+                    <button class="btn-follow" onclick="toggleFollow(event, 4)">Seguir</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Por Categoria (By Category) -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">📂</span>
+                    Por Categoria
+                </h2>
+                <a class="section-link" onclick="viewAll('categories')">Ver todas</a>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-card" onclick="openCategory('trabalho')">
+                    <div class="category-icon">💼</div>
+                    <div class="category-name">Trabalho</div>
+                    <div class="category-count">2.5k posts</div>
+                </div>
+                
+                <div class="category-card" onclick="openCategory('relacionamentos')">
+                    <div class="category-icon">❤️</div>
+                    <div class="category-name">Relacionamentos</div>
+                    <div class="category-count">3.8k posts</div>
+                </div>
+                
+                <div class="category-card" onclick="openCategory('tecnologia')">
+                    <div class="category-icon">💻</div>
+                    <div class="category-name">Tecnologia</div>
+                    <div class="category-count">1.9k posts</div>
+                </div>
+                
+                <div class="category-card" onclick="openCategory('esportes')">
+                    <div class="category-icon">⚽</div>
+                    <div class="category-name">Esportes</div>
+                    <div class="category-count">2.1k posts</div>
+                </div>
+                
+                <div class="category-card" onclick="openCategory('comida')">
+                    <div class="category-icon">🍕</div>
+                    <div class="category-name">Comida</div>
+                    <div class="category-count">4.2k posts</div>
+                </div>
+                
+                <div class="category-card" onclick="openCategory('viagens')">
+                    <div class="category-icon">✈️</div>
+                    <div class="category-name">Viagens</div>
+                    <div class="category-count">1.7k posts</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Top da Semana (Top of the Week) -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">🏆</span>
+                    Top da Semana
+                </h2>
+                <a class="section-link" onclick="viewAll('top-week')">Ver ranking</a>
+            </div>
+            
+            <div class="top-week-grid">
+                <div class="top-card" onclick="openPost(11)">
+                    <div class="top-rank gold">1</div>
+                    <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=200&h=200&fit=crop" 
+                         alt="Top 1" class="top-image">
+                    <div class="top-content">
+                        <div class="top-creator">@astronautabr</div>
+                        <div class="top-prompt">💭 "astronauta fazendo churrasco na lua"</div>
+                        <div class="top-stats">
+                            <span>❤️ 45.2k</span>
+                            <span>💬 2.1k</span>
+                            <span>↗️ 1.8k</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="top-card" onclick="openPost(12)">
+                    <div class="top-rank silver">2</div>
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200&h=200&fit=crop" 
+                         alt="Top 2" class="top-image">
+                    <div class="top-content">
+                        <div class="top-creator">@chefmaster</div>
+                        <div class="top-prompt">💭 "cozinhando pizza no vulcão"</div>
+                        <div class="top-stats">
+                            <span>❤️ 38.7k</span>
+                            <span>💬 1.9k</span>
+                            <span>↗️ 1.5k</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="top-card" onclick="openPost(13)">
+                    <div class="top-rank bronze">3</div>
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop" 
+                         alt="Top 3" class="top-image">
+                    <div class="top-content">
+                        <div class="top-creator">@politicobr</div>
+                        <div class="top-prompt">💭 "político virando motorista de uber"</div>
+                        <div class="top-stats">
+                            <span>❤️ 32.4k</span>
+                            <span>💬 1.7k</span>
+                            <span>↗️ 1.2k</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Para Você (For You) -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-emoji">🎯</span>
+                    Para Você
+                </h2>
+                <a class="section-link" onclick="refreshForYou()">Atualizar</a>
+            </div>
+            
+            <div class="for-you-grid">
+                <div class="for-you-card" onclick="openPost(21)">
+                    <img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300&h=300&fit=crop" 
+                         alt="For You" class="for-you-image">
+                    <div class="for-you-badge">95%</div>
+                </div>
+                
+                <div class="for-you-card" onclick="openPost(22)">
+                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&h=300&fit=crop" 
+                         alt="For You" class="for-you-image">
+                    <div class="for-you-badge">92%</div>
+                </div>
+                
+                <div class="for-you-card" onclick="openPost(23)">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop" 
+                         alt="For You" class="for-you-image">
+                    <div class="for-you-badge">89%</div>
+                </div>
+                
+                <div class="for-you-card" onclick="openPost(24)">
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&h=300&fit=crop" 
+                         alt="For You" class="for-you-image">
+                    <div class="for-you-badge">87%</div>
+                </div>
+                
+                <div class="for-you-card" onclick="openPost(25)">
+                    <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=300&h=300&fit=crop" 
+                         alt="For You" class="for-you-image">
+                    <div class="for-you-badge">85%</div>
+                </div>
+                
+                <div class="for-you-card" onclick="openPost(26)">
+                    <img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300&h=300&fit=crop" 
+                         alt="For You" class="for-you-image">
+                    <div class="for-you-badge">83%</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container">
+            <button class="nav-item" onclick="navigateTo('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Início</span>
+            </button>
+            
+            <button class="nav-item active" onclick="navigateTo('explore')">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Explorar</span>
+            </button>
+            
+            <button class="nav-item create-button" onclick="createPost()">
+                <div class="create-icon-wrapper">
+                    <span class="nav-icon">+</span>
+                </div>
+            </button>
+            
+            <button class="nav-item" onclick="navigateTo('notifications')">
+                <span class="nav-icon">🔔</span>
+                <span class="nav-label">Notificações</span>
+            </button>
+            
+            <button class="nav-item" onclick="window.location.href='wisnap_perfil.html'">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Perfil</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Navigation
+        function navigateTo(section) {
+            console.log('Navigating to:', section);
+            alert(`Navegando para: ${section}`);
+        }
+
+        // Search
+        function openSearch() {
+            alert('🔍 Abrindo busca avançada...\n\nBusque por:\n• Criadores\n• Temas\n• Hashtags\n• Prompts');
+        }
+
+        function openFilters() {
+            alert('⚙️ Filtros disponíveis:\n\n• Data\n• Categoria\n• Engajamento\n• Criador verificado');
+        }
+
+        // Notifications
+        function openNotifications() {
+            alert('🔔 Abrindo notificações...');
+        }
+
+        // View All
+        function viewAll(section) {
+            alert(`📱 Abrindo seção completa: ${section}`);
+        }
+
+        // Open Post
+        function openPost(id) {
+            alert(`📱 Abrindo post ${id} em fullscreen...`);
+        }
+
+        // Open Category
+        function openCategory(category) {
+            alert(`📂 Abrindo categoria: ${category}\n\nFeed filtrado com posts desta categoria`);
+        }
+
+        // View Profile
+        function viewProfile(username) {
+            alert(`👤 Abrindo perfil: ${username}`);
+        }
+
+        // Toggle Follow
+        function toggleFollow(event, userId) {
+            event.stopPropagation();
+            const btn = event.currentTarget;
+            
+            if (btn.classList.contains('following')) {
+                btn.classList.remove('following');
+                btn.textContent = 'Seguir';
+                alert(`Você deixou de seguir este criador`);
+            } else {
+                btn.classList.add('following');
+                btn.textContent = 'Seguindo';
+                alert(`✓ Agora você está seguindo este criador!`);
+            }
+        }
+
+        // Refresh For You
+        function refreshForYou() {
+            alert('🔄 Atualizando recomendações personalizadas...');
+            setTimeout(() => {
+                alert('✓ Recomendações atualizadas!');
+            }, 1000);
+        }
+
+        // Create Post
+        function createPost() {
+            alert('➕ Abrindo tela de criação...\n\n📸 Upload → 💭 Descrição → ✨ IA → 🚀 Publicar');
+        }
+    </script>
+</body>
+</html>
