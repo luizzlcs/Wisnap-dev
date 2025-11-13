@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisnap - Notificações</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2B59FF;
+            --secondary-blue: #7398FF;
+            --accent-yellow: #FFD23F;
+            --light-gray: #E2E2E2;
+            --background: #F8F9FA;
+            --dark-text: #0A0E27;
+            --success-green: #10B981;
+            --heart-red: #EF4444;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Logo Wisnap */
+        .wisnap-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .logo-w-container {
+            position: relative;
+        }
+
+        .logo-w {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--primary-blue);
+        }
+
+        .header-divider {
+            color: var(--light-gray);
+            font-size: 20px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .btn-mark-all {
+            padding: 8px 16px;
+            background: var(--background);
+            color: var(--primary-blue);
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-mark-all:hover {
+            border-color: var(--primary-blue);
+            background: rgba(43, 89, 255, 0.05);
+        }
+
+        /* Tabs */
+        .tabs-nav {
+            position: sticky;
+            top: 72px;
+            z-index: 100;
+            background: white;
+            border-bottom: 2px solid var(--light-gray);
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            flex-shrink: 0;
+            padding: 16px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .tab-item:hover {
+            color: var(--primary-blue);
+            background: var(--background);
+        }
+
+        .tab-item.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-badge {
+            background: var(--light-gray);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .tab-item.active .tab-badge {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Date Group */
+        .date-group {
+            margin-bottom: 24px;
+        }
+
+        .date-header {
+            padding: 16px 20px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 128px;
+            background: var(--background);
+            z-index: 50;
+        }
+
+        /* Notification Item */
+        .notification-item {
+            background: white;
+            border-bottom: 1px solid var(--light-gray);
+            padding: 16px 20px;
+            display: flex;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            background: var(--background);
+        }
+
+        .notification-item.unread {
+            background: rgba(43, 89, 255, 0.03);
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary-blue);
+        }
+
+        /* Avatar */
+        .notification-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid white;
+        }
+
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .notification-icon.like {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+        }
+
+        .notification-icon.comment {
+            background: linear-gradient(135deg, #10B981, #059669);
+        }
+
+        .notification-icon.follow {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        }
+
+        .notification-icon.trending {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+        }
+
+        .notification-icon.milestone {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+
+        /* Content */
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-text {
+            font-size: 15px;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .notification-user {
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .notification-comment {
+            color: #6B7280;
+            font-style: italic;
+        }
+
+        .notification-time {
+            font-size: 13px;
+            color: #9CA3AF;
+        }
+
+        /* Thumbnail */
+        .notification-thumbnail {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        /* Action Button */
+        .notification-action {
+            display: flex;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .btn-follow {
+            padding: 8px 20px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-follow:hover {
+            background: #1E3FCC;
+            transform: scale(1.05);
+        }
+
+        .btn-following {
+            background: var(--background);
+            color: var(--dark-text);
+            border: 2px solid var(--light-gray);
+        }
+
+        .btn-following:hover {
+            border-color: var(--primary-blue);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+        }
+
+        .empty-message {
+            font-size: 15px;
+            color: #6B7280;
+            margin-bottom: 24px;
+        }
+
+        .btn-empty {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 24px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-empty:hover {
+            background: #1E3FCC;
+            transform: translateY(-2px);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid var(--light-gray);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .bottom-nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: none;
+            border: none;
+            flex: 1;
+        }
+
+        .nav-item:hover {
+            background: var(--background);
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: transform 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: var(--heart-red);
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #6B7280;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .nav-item.create-button {
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .create-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(43, 89, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.create-button:hover .create-icon-wrapper {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(43, 89, 255, 0.4);
+        }
+
+        .create-icon-wrapper .nav-icon {
+            color: white;
+            font-size: 28px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 18px;
+            }
+
+            .btn-mark-all {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .notification-item {
+                padding: 12px 16px;
+            }
+
+            .notification-avatar,
+            .notification-icon,
+            .notification-thumbnail {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-item {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="wisnap-logo" onclick="navigateTo('home')">
+                    <div class="logo-w-container">
+                        <div class="logo-w">W</div>
+                        <div class="logo-dot"></div>
+                    </div>
+                    <span class="logo-text">wisnap</span>
+                </div>
+                <span class="header-divider">|</span>
+                <h1 class="header-title">Notificações</h1>
+            </div>
+            <button class="btn-mark-all" onclick="markAllAsRead()">
+                ✓ Marcar todas
+            </button>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tabs-nav">
+        <button class="tab-item active" onclick="filterNotifications('all')">
+            <span>Todas</span>
+            <span class="tab-badge">12</span>
+        </button>
+        <button class="tab-item" onclick="filterNotifications('likes')">
+            <span>❤️ Curtidas</span>
+            <span class="tab-badge">5</span>
+        </button>
+        <button class="tab-item" onclick="filterNotifications('comments')">
+            <span>💬 Comentários</span>
+            <span class="tab-badge">3</span>
+        </button>
+        <button class="tab-item" onclick="filterNotifications('follows')">
+            <span>👥 Seguidores</span>
+            <span class="tab-badge">2</span>
+        </button>
+        <button class="tab-item" onclick="filterNotifications('milestones')">
+            <span>🎉 Marcos</span>
+            <span class="tab-badge">2</span>
+        </button>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Hoje -->
+        <section class="date-group">
+            <div class="date-header">Hoje</div>
+            
+            <!-- Like Notification -->
+            <div class="notification-item unread" onclick="openNotification(1)">
+                <img src="https://i.pravatar.cc/100?img=32" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@carlosdev</span> curtiu seu Wisnap
+                    </div>
+                    <div class="notification-time">5 minutos atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+
+            <!-- Comment Notification -->
+            <div class="notification-item unread" onclick="openNotification(2)">
+                <img src="https://i.pravatar.cc/100?img=45" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@anabeatriz</span> comentou: 
+                        <span class="notification-comment">"Isso ficou incrível! 🔥"</span>
+                    </div>
+                    <div class="notification-time">12 minutos atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+
+            <!-- Trending Notification -->
+            <div class="notification-item unread" onclick="openNotification(3)">
+                <div class="notification-icon trending">🏆</div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        Seu Wisnap está em alta! 
+                        <span style="font-weight: 600;">2.5k curtidas</span> nas últimas 24 horas 🚀
+                    </div>
+                    <div class="notification-time">1 hora atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+
+            <!-- Follow Notification -->
+            <div class="notification-item unread" onclick="openNotification(4)">
+                <img src="https://i.pravatar.cc/100?img=28" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@brunolopes</span> começou a te seguir
+                    </div>
+                    <div class="notification-time">2 horas atrás</div>
+                    <div class="notification-action">
+                        <button class="btn-follow" onclick="toggleFollow(event, 4)">Seguir de Volta</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestone Notification -->
+            <div class="notification-item" onclick="openNotification(5)">
+                <div class="notification-icon milestone">🎉</div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        Parabéns! Você alcançou <span style="font-weight: 700;">1.000 curtidas</span> 
+                        no seu Wisnap "astronauta na lua" 🌟
+                    </div>
+                    <div class="notification-time">3 horas atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+        </section>
+
+        <!-- Esta Semana -->
+        <section class="date-group">
+            <div class="date-header">Esta Semana</div>
+            
+            <!-- Like Notification -->
+            <div class="notification-item" onclick="openNotification(6)">
+                <img src="https://i.pravatar.cc/100?img=15" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@juliasilva</span> curtiu seu Wisnap
+                    </div>
+                    <div class="notification-time">2 dias atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+
+            <!-- Multiple Likes -->
+            <div class="notification-item" onclick="openNotification(7)">
+                <div class="notification-icon like">❤️</div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@pedrohenrique</span> e 
+                        <span class="notification-user">mais 8 pessoas</span> curtiram seu Wisnap
+                    </div>
+                    <div class="notification-time">3 dias atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+
+            <!-- Comment Notification -->
+            <div class="notification-item" onclick="openNotification(8)">
+                <img src="https://i.pravatar.cc/100?img=22" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@marialuiza</span> comentou: 
+                        <span class="notification-comment">"Que edição top! 👏"</span>
+                    </div>
+                    <div class="notification-time">4 dias atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+
+            <!-- Follow Notification -->
+            <div class="notification-item" onclick="openNotification(9)">
+                <img src="https://i.pravatar.cc/100?img=40" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@fernandacosta</span> começou a te seguir
+                    </div>
+                    <div class="notification-time">5 dias atrás</div>
+                    <div class="notification-action">
+                        <button class="btn-follow btn-following" onclick="toggleFollow(event, 9)">Seguindo</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mais Antigo -->
+        <section class="date-group">
+            <div class="date-header">Mais Antigo</div>
+            
+            <!-- Milestone 500 -->
+            <div class="notification-item" onclick="openNotification(10)">
+                <div class="notification-icon milestone">🎉</div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        Você alcançou <span style="font-weight: 700;">500 seguidores</span>! 
+                        Continue criando conteúdo incrível 🚀
+                    </div>
+                    <div class="notification-time">1 semana atrás</div>
+                </div>
+            </div>
+
+            <!-- Like -->
+            <div class="notification-item" onclick="openNotification(11)">
+                <img src="https://i.pravatar.cc/100?img=50" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@ricardoalves</span> curtiu seu Wisnap
+                    </div>
+                    <div class="notification-time">2 semanas atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+
+            <!-- Comment -->
+            <div class="notification-item" onclick="openNotification(12)">
+                <img src="https://i.pravatar.cc/100?img=18" alt="Avatar" class="notification-avatar">
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <span class="notification-user">@lucasmendes</span> comentou: 
+                        <span class="notification-comment">"Perfeito! 😂"</span>
+                    </div>
+                    <div class="notification-time">2 semanas atrás</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=100&h=100&fit=crop" 
+                     alt="Post" class="notification-thumbnail">
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container">
+            <button class="nav-item" onclick="navigateTo('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Início</span>
+            </button>
+            
+            <button class="nav-item" onclick="window.location.href='wisnap_explorar.html'">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Explorar</span>
+            </button>
+            
+            <button class="nav-item create-button" onclick="createPost()">
+                <div class="create-icon-wrapper">
+                    <span class="nav-icon">+</span>
+                </div>
+            </button>
+            
+            <button class="nav-item active" onclick="navigateTo('notifications')">
+                <div class="nav-icon">
+                    🔔
+                    <span class="nav-badge">4</span>
+                </div>
+                <span class="nav-label">Notificações</span>
+            </button>
+            
+            <button class="nav-item" onclick="window.location.href='wisnap_perfil.html'">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Perfil</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Navigation
+        function navigateTo(section) {
+            console.log('Navigating to:', section);
+            alert(`Navegando para: ${section}`);
+        }
+
+        // Filter Notifications
+        function filterNotifications(type) {
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active to clicked tab
+            event.currentTarget.classList.add('active');
+            
+            // Filter logic would go here
+            console.log('Filtering by:', type);
+            alert(`Filtrando notificações: ${type}`);
+        }
+
+        // Mark All As Read
+        function markAllAsRead() {
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            
+            unreadItems.forEach(item => {
+                item.classList.remove('unread');
+            });
+            
+            // Update badge counts
+            document.querySelectorAll('.tab-badge').forEach(badge => {
+                badge.textContent = '0';
+            });
+            
+            document.querySelector('.nav-badge').style.display = 'none';
+            
+            alert('✓ Todas as notificações foram marcadas como lidas');
+        }
+
+        // Open Notification
+        function openNotification(id) {
+            const item = event.currentTarget;
+            
+            // Mark as read
+            item.classList.remove('unread');
+            
+            console.log('Opening notification:', id);
+            alert(`Abrindo notificação ${id}...\n\n• Se for post: abre o post\n• Se for seguidor: abre perfil\n• Se for marco: abre analytics`);
+        }
+
+        // Toggle Follow
+        function toggleFollow(e, userId) {
+            e.stopPropagation();
+            
+            const btn = e.currentTarget;
+            
+            if (btn.classList.contains('btn-following')) {
+                btn.classList.remove('btn-following');
+                btn.textContent = 'Seguir de Volta';
+                alert(`Você deixou de seguir este usuário`);
+            } else {
+                btn.classList.add('btn-following');
+                btn.textContent = 'Seguindo';
+                alert(`✓ Agora você está seguindo este usuário!`);
+            }
+        }
+
+        // Create Post
+        function createPost() {
+            alert('➕ Abrindo tela de criação...\n\n📸 Upload → 💭 Descrição → ✨ IA → 🚀 Publicar');
+        }
+
+        // Mark notification as read on view (simulation)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.remove('unread');
+                    }, 2000);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Observe all unread notifications
+        document.querySelectorAll('.notification-item.unread').forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
